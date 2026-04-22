@@ -4,10 +4,10 @@ plugins {
 }
 
 group = 'com.swiftshare'
-version = '1.0'
+version = '2.0'
 
 application {
-    mainClass = 'com.swiftshare.desktop.Main'
+    mainClass = 'com.swiftshare.desktop.SwiftSharePC'
 }
 
 java {
@@ -20,10 +20,10 @@ repositories {
 }
 
 dependencies {
-    // No external dependencies needed for basic TCP
+    implementation 'com.google.zxing:core:3.5.2'
+    implementation 'com.google.zxing:javase:3.5.2'
 }
 
-// Task to create a fat JAR
 tasks.register('fatJar', Jar) {
     manifest {
         attributes 'Main-Class': application.mainClass
