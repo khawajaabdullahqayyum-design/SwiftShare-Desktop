@@ -17,14 +17,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           
-      - name: Build Fat JAR with Gradle
+      - name: Build Fat JAR
         run: gradle fatJar
         
       - name: Create EXE with jpackage
         run: |
+          $jarFile = Get-ChildItem -Path build/libs -Filter *.jar | Select-Object -First 1
+          if (-not $jarFile) { Write-Error "JAR file not found"; exit 1 }
           jpackage --input build/libs `
                    --name SwiftShare-Desktop `
-                   --main-jar SwiftShare-Desktop-1.0.jar `
+                   --main-jar $jarFile.Name `
                    --main-class com.swiftshare.desktop.Main `
                    --type exe `
                    --dest installer `
