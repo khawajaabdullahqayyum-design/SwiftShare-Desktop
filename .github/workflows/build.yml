@@ -1,0 +1,37 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          
+      - name: Build Fat JAR
+        run: ./gradlew fatJar
+        
+      - name: Create EXE with jpackage
+        run: |
+          jpackage --input build/libs `
+                   --name SwiftShare-Desktop `
+                   --main-jar SwiftShare-Desktop-1.0.jar `
+                   --main-class com.swiftshare.desktop.Main `
+                   --type exe `
+                   --dest installer `
+                   --win-console
+      
+      - name: Upload EXE Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: SwiftShare-Desktop-Installer
+          path: installer/*.exe
