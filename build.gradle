@@ -5,7 +5,10 @@ plugins {
 
 group = 'com.swiftshare'
 version = '1.0'
-mainClassName = 'com.swiftshare.desktop.Main'
+
+application {
+    mainClass = 'com.swiftshare.desktop.Main'
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -21,12 +24,14 @@ dependencies {
 }
 
 // Task to create a fat JAR
-task fatJar(type: Jar) {
+tasks.register('fatJar', Jar) {
     manifest {
-        attributes 'Main-Class': mainClassName
+        attributes 'Main-Class': application.mainClass
     }
     archiveBaseName = 'SwiftShare-Desktop'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
     with jar
 }
