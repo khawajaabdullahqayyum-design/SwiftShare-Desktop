@@ -17,21 +17,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           
-      - name: Grant execute permission for gradlew
-        run: |
-          # On Windows, we don't need chmod, but we ensure gradlew.bat exists
-          if (Test-Path gradlew.bat) { Write-Host "gradlew.bat found" } else { Write-Error "gradlew.bat missing" }
-        shell: pwsh
-
-      - name: Build Fat JAR
-        run: .\gradlew.bat fatJar
+      - name: Build Fat JAR with Gradle
+        run: gradle fatJar
         
       - name: Create EXE with jpackage
         run: |
-          $jarPath = Get-ChildItem -Path build/libs -Filter *.jar | Select-Object -First 1
           jpackage --input build/libs `
                    --name SwiftShare-Desktop `
-                   --main-jar $jarPath.Name `
+                   --main-jar SwiftShare-Desktop-1.0.jar `
                    --main-class com.swiftshare.desktop.Main `
                    --type exe `
                    --dest installer `
