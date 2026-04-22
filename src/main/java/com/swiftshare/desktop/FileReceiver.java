@@ -3,6 +3,7 @@ package com.swiftshare.desktop;
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
+import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FileReceiver {
