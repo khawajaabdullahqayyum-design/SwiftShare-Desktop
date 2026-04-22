@@ -1,40 +1,22 @@
-name: Build Windows EXE
+name: Build SwiftShare APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          
-      - name: Build Fat JAR
-        run: gradle fatJar
-        
-      - name: Create EXE with jpackage
-        run: |
-          $jarFile = Get-ChildItem -Path build/libs -Filter *.jar | Select-Object -First 1
-          if (-not $jarFile) { Write-Error "JAR file not found"; exit 1 }
-          jpackage --input build/libs `
-                   --name SwiftShare-Desktop `
-                   --main-jar $jarFile.Name `
-                   --main-class com.swiftshare.desktop.Main `
-                   --type exe `
-                   --dest installer `
-                   --win-console
-        shell: pwsh
-      
-      - name: Upload EXE Installer
-        uses: actions/upload-artifact@v4
+      - run: chmod +x gradlew
+      - run: ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
         with:
-          name: SwiftShare-Desktop-Installer
-          path: installer/*.exe
+          name: SwiftShare-Debug
+          path: app/build/outputs/apk/debug/app-debug.apk
